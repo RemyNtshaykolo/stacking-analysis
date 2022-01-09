@@ -46,9 +46,13 @@ resource "aws_iam_role_policy_attachment" "sqs" {
   role       = aws_iam_role.lambda.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole"
 }
-resource "aws_iam_role_policy_attachment" "athena_glue_s3" {
+resource "aws_iam_role_policy_attachment" "athena_glue" {
   role       = aws_iam_role.lambda.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
+}
+resource "aws_iam_role_policy_attachment" "s3" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
 resource "aws_sqs_queue" "lambda_dead_letter_queue" {
