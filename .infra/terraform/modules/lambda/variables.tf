@@ -35,7 +35,13 @@ variable "dead_letter_queue" {
 variable "cron" {
   description = "Add cron event with input"
   default     = null
-  type        = map(any)
+  type        = any
+}
+
+
+variable "env" {
+  description = "Env variables"
+  type        = any
 }
 
 

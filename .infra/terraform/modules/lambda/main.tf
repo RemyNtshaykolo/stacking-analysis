@@ -32,17 +32,23 @@ resource "aws_lambda_function" "lambda" {
   timeout                        = var.timeout
   memory_size                    = var.memory_size
   reserved_concurrent_executions = var.reserved_concurrent_executions
-  source_code_hash               = split("sha256", data.aws_ecr_image.lambda_image.id)[0] #sha256:fnksfnksjnfkesfnkesnfkesfnsek => fnksfnksjnfkesfnkesnfkesfnsek
-  #   environment {
-  #     variables = {
-  #       foo = "bar"
-  #     }
-  #   }
+  source_code_hash               = split("sha256:", data.aws_ecr_image.lambda_image.id)[1] #sha256:fnksfnksjnfkesfnkesnfkesfnsek => fnksfnksjnfkesfnkesnfkesfnsek
+  environment {
+    variables = var.env
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch" {
   role       = aws_iam_role.lambda.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+resource "aws_iam_role_policy_attachment" "sqs" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole"
+}
+resource "aws_iam_role_policy_attachment" "athena_glue_s3" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
 }
 
 resource "aws_sqs_queue" "lambda_dead_letter_queue" {
@@ -62,11 +68,8 @@ resource "aws_cloudwatch_event_target" "cron" {
   input_transformer {
     input_paths = { "time" = "$.time" }
 
-    input_template = <<INPUT_TEMPLATE_EOF
-    {
-        "timestamp":<time>
-    }
-    INPUT_TEMPLATE_EOF
+    input_template = replace(replace(jsonencode(merge({ "timestamp" : "<time>" }, var.cron["input"])), "\\u003c", "<"), "\\u003e", ">")
+
   }
 }
 

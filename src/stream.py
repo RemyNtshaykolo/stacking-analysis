@@ -3,6 +3,7 @@ from enum import Enum
 import awswrangler as wr
 import pandas as pd
 from glue import Db, Table, get_s3_path
+from dateutil.parser import parse
 
 
 class Streamtype(Enum):
@@ -11,10 +12,9 @@ class Streamtype(Enum):
 
 
 def lambda_handler(event, context):
-    print(event)
     stream_type = event["stream_type"]
     wallet_address = event["wallet_address"]
-    timestamp = event["timestamp"]
+    timestamp = int(parse(event["timestamp"]).replace(second=0).timestamp())
 
     bsc_client = BscScanClient()
     db = Db.CRYPTO.value
