@@ -1,7 +1,6 @@
 from bsc_scan import BscScanClient
 from enum import Enum
-
-# import awswrangler as wr
+import awswrangler as wr
 import pandas as pd
 from glue import Db, Table, get_s3_path
 

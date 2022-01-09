@@ -17,6 +17,10 @@ resource "aws_iam_role" "lambda" {
 EOF
 }
 
+data "aws_ecr_image" "lambda_image" {
+  repository_name = "crypto"
+  image_tag       = "lambda_image"
+}
 resource "aws_lambda_function" "lambda" {
   function_name = var.name
   role          = aws_iam_role.lambda.arn
@@ -28,7 +32,7 @@ resource "aws_lambda_function" "lambda" {
   timeout                        = var.timeout
   memory_size                    = var.memory_size
   reserved_concurrent_executions = var.reserved_concurrent_executions
-
+  source_code_hash               = split("sha256", data.aws_ecr_image.lambda_image.id)[0] #sha256:fnksfnksjnfkesfnkesnfkesfnsek => fnksfnksjnfkesfnkesnfkesfnsek
   #   environment {
   #     variables = {
   #       foo = "bar"
