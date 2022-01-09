@@ -1,0 +1,19 @@
+{
+  "name": "crypto",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build-push-lambdas": ". ./scripts/build-push-lambdas.sh",
+    "tf-init": "terraform -chdir='.infra/terraform' init",
+    "tf-plan": "terraform -chdir='.infra/terraform' plan",
+    "tf-apply": "terraform -chdir='.infra/terraform' apply --auto-approve",
+    "stream-transaction": "serverless invoke local --function stream -p resources/stream-transaction-cron.json"
+  },
+  "dependencies": {
+    "serverless": "^2.63.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^8.2.0"
+  }
+}

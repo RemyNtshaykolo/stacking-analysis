@@ -1,0 +1,23 @@
+service: datahub
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.7
+  environment:
+    STAGE: 'dev'
+    AWS_DEFAULT_REGION: 'eu-west-3'
+    bsc_scan_api_key: "QFJJI57H6QYKZUWKV5W3K8HFRBB5CX6RAX"
+
+
+functions:
+  stream:
+    environment:
+      PYTHONPATH: ./src
+    handler: src/stream.lambda_handler
+    runtime: python3.7
+
+
+plugins:
+  - serverless-offline
