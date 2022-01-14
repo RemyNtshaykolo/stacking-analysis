@@ -85,3 +85,8 @@ resource "aws_lambda_permission" "cron" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.cron[0].arn
 }
+
+resource "aws_lambda_function_event_invoke_config" "config" {
+  function_name          = aws_lambda_function.lambda.function_name
+  maximum_retry_attempts = 0
+}
